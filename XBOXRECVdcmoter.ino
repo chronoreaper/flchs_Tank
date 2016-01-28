@@ -189,6 +189,13 @@ void loop() {
         analogWrite(PWM_A, b); 
         analogWrite(PWM_B, a);
         
+       //chris's code
+       posX1 = map(Xbox.getAnalogHat(LeftHatX, i), -32768,0, -255,0);
+       posX2 = map(Xbox.getAnalogHat(LeftHatX, i), 0, 32767, 0, 255);
+       posY = map(Xbox.getAnalogHat(LeftHatY, i), -32768, 32767, -255, 255);
+       analogWrite(PWM_A, (posY+posX1)/2); 
+       analogWrite(PWM_B, (posY+posX2)/2);
+       
         
         /*if(r==l){
           digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
