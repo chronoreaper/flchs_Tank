@@ -4,6 +4,8 @@
  For more information see the blog post: http://blog.tkjelectronics.dk/2012/12/xbox-360-receiver-added-to-the-usb-host-library/ or
  send me an e-mail:  kristianl@tkjelectronics.com
  */
+ 
+ //NEW CODE EDIT FOR CHRIS. I PROBABLY WILL NOT BE HERE ON WENDSDAY. ILL LEAVE THIS LAST CODE.. EHEH
 
 #include <XBOXRECV.h>
 
@@ -38,6 +40,10 @@ int posX1=0;
 int posY1=0;
 int posX2=0;
 int posY2=0;
+int maxSpd=0;
+int cir=0;
+int arcLengthY=0;
+int arcLengthX=0;
 //int w = 0;
 //int v = 0;
 
@@ -154,7 +160,7 @@ void loop() {
           Serial.println("\nDirection: Backward");
         }
         //mathew's code
-        
+        /*
 
         a = Xbox.getAnalogHat(LeftHatX, i);
         b = Xbox.getAnalogHat(LeftHatY, i);
@@ -241,6 +247,8 @@ void loop() {
               digitalWrite(BRAKE_B, HIGH);
             }
           }
+        //end for mathew's code
+        */
         
         /*if(b>3000){
           digitalWrite(BRAKE_A, LOW);
@@ -281,18 +289,73 @@ void loop() {
         
         analogWrite(PWM_A, r); 
         analogWrite(PWM_B, l);
-        
+        */
 
-        //chris code
-
-  /*     
+        //chris code UPDATED JAN 31, 2015 (SOLUTIONS TO OUR TURNING PROBLEM. i think) I never tested this. please fix if nessesary. probaly wont work thouh. i wrote down the theroy
+        // if this program does not work, to fix
+        //how to fix. find out how to mesures angles for circle and two points.
+        //propaby university or grade 11-12 stuff. ask Mathew if he knows. MATHew eheh get it ? ( probably spelt his name wrong though...)
         posX1 = map(Xbox.getAnalogHat(RightHatX, i), -32768, 32767, -255, 255);
-        posY1 = map(Xbox.getAnalogHat(RightHatY, i), -32768, 32767, 255, -255);
-        posY2 = map(Xbox.getAnalogHat(RightHatY, i), -32768, 32767, -255, 255);
+        posY1 = map(Xbox.getAnalogHat(RightHatY, i), -32768, 32767, -255, 255);
+        maxSpd= sqrt(pow(posX1,2)+pow(posY1,2)); //X2+Y2=R2 for max spd
+        //imagin the joystick is divided into 8 pieces.
+        /*
+        joystick layout
+            Y
+         \ 1|2 /
+        3 \ | /  4
+       -----------X
+        5 / | \6
+         / 7|8 \
+        
+        */
+if (RightHatY>0){//checks if your joystick is up so for #1-4
+       if (RightHatX<0){//check for area 1 and 3
+            if (abs(posX)<abs(posY)){//check for area 1 
+            analogWrite(PWM_A, maxSpd); //right at max speed foward
+            analogWrite(PWM_B, maxSpd*abs(posX)/abs(posY));//left scaling speed foward
+            }
+             if (abs(posX)>abs(posY)){//check for area 3
+            analogWrite(PWM_A, maxSpd); //right at max speed foward
+            analogWrite(PWM_B, -(maxSpd*abs(posY)/abs(posX)));//left scaling speed backwards
+            }
+       }//end if for 1 and 3
+       if (RightHatX<0){//check for area 2 and 4
+            if (abs(posX)<abs(posY)){//check for area 2 
+            analogWrite(PWM_A, maxSpd*abs(posX)/abs(posY)); //right at scaling speed foward
+            analogWrite(PWM_B, maxSpd);//left max speed foward
+            }
+             if (abs(posX)>abs(posY)){//check for area 4
+            analogWrite(PWM_A, -(maxSpd*abs(posY)/abs(posX))); //right at scaling speed backwards
+            analogWrite(PWM_B, maxSpd);//left max speed forwards
+            }
+       }//end if for 2 and 4
+}//end for 1-4
+if (RightHatY<0){//checks if your joystick is up so for #5-8
+       if (RightHatX<0){//check for area 5 and 7
+            if (abs(posX)<abs(posY)){//check for area 7
+            analogWrite(PWM_A, -maxSpd); //right at max speed backwards
+            analogWrite(PWM_B, -maxSpd*abs(posX)/abs(posY));//left scaling speed backwards
+            }
+             if (abs(posX)>abs(posY)){//check for area 5
+            analogWrite(PWM_A, -maxSpd); //right at max speed back
+            analogWrite(PWM_B, (maxSpd*abs(posY)/abs(posX)));//left scaling speed forward
+            }
+       }//end if for 5 and 7
+       if (RightHatX<0){//check for area 6 and 8
+            if (abs(posX)<abs(posY)){//check for area 8 
+            analogWrite(PWM_A, -maxSpd*abs(posX)/abs(posY)); //right at scaling speed back
+            analogWrite(PWM_B, -maxSpd);//left max speed back
+            }
+             if (abs(posX)>abs(posY)){//check for area 6
+            analogWrite(PWM_A, (maxSpd*abs(posY)/abs(posX))); //right at scaling speed forwards
+            analogWrite(PWM_B, -maxSpd);//left max speed back
+            }
+       }//end if for 6 and 8
+}//end for 5-8
 
-        analogWrite(PWM_A, (-posX1+posY1)); 
-        analogWrite(PWM_B, (-posX1+posY1));
-*/
+//ENDEND END END END 
+
   /*
         int x_axis = AnalogRead(0); // value of X-Axis joystick (0-1023, 512 = centered)
   int y_axis = AnalogRead(1); // value of Y-Axis joystick (0-1023, 512 = centered)
